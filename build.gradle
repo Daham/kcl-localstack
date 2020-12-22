@@ -1,0 +1,67 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+ext {
+    awsJavaSdkVersion = '1.11.844'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', 'Greenwich.RELEASE')
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation "org.testcontainers:localstack:1.15.0"
+
+    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.844')
+
+    //dependencies for amazon-kinesis-client library
+    implementation "com.amazonaws:aws-java-sdk-dynamodb:${awsJavaSdkVersion}"
+    implementation "com.amazonaws:aws-java-sdk-kinesis:${awsJavaSdkVersion}"
+    implementation "com.amazonaws:aws-java-sdk-cloudwatch:${awsJavaSdkVersion}"
+    implementation "com.amazonaws:aws-java-sdk-core:${awsJavaSdkVersion}"
+    compile "com.google.guava:guava:26.0-jre"
+    compile "com.google.protobuf:protobuf-java:3.11.4"
+    compile "org.apache.commons:commons-lang3:3.7"
+    compile "commons-logging:commons-logging:1.1.3"
+    compile "org.projectlombok:lombok:1.16.10"
+    testCompile "junit:junit:4.11"
+    testCompile "org.mockito:mockito-all:1.10.19"
+    testCompile "org.hamcrest:hamcrest-all:1.3"
+    testCompile "log4j:log4j:1.2.17"
+
+    //customized amazon-kinesis-client library
+    compile files('libs/amazon-kinesis-client-1.14.0.jar')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
